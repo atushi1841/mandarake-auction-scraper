@@ -5,5 +5,26 @@
   "description": "Scrape Japanese auction listings from Mandarake - anime, manga, figures, toys, collectibles",
   "version": "0.1",
   "buildTag": "latest",
-  "dockerfile": "../Dockerfile"
+  "dockerfile": "../Dockerfile",
+  "outputSchema": {
+    "title": "Mandarake Auction Listing",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+      "item_index": {"title": "Index", "type": "integer", "description": "Item index number"},
+      "item_no": {"title": "Item Number", "type": "string", "description": "Mandarake item number"},
+      "name": {"title": "Name", "type": "string", "description": "Item name"},
+      "current_price_jpy": {"title": "Current Price (JPY)", "type": "integer", "description": "Current auction price in yen"},
+      "start_price_jpy": {"title": "Start Price (JPY)", "type": "integer", "description": "Starting auction price"},
+      "bid_count": {"title": "Bids", "type": "integer", "description": "Number of bids"},
+      "watch_count": {"title": "Watchers", "type": "integer", "description": "Number of watchers"},
+      "shop_name": {"title": "Shop", "type": "string", "description": "Seller shop name"},
+      "image_url": {"title": "Image URL", "type": "string", "description": "Item thumbnail URL"},
+      "item_url": {"title": "Item URL", "type": "string", "description": "Full item page URL"},
+      "category": {"title": "Category", "type": "string", "description": "Item category"},
+      "auction_type": {"title": "Auction Type", "type": "string", "description": "Auction format"},
+      "scraped_at": {"title": "Scraped At", "type": "string", "description": "Timestamp of scraping"}
+    },
+    "required": ["name", "current_price_jpy", "item_url", "auction_type"]
+  }
 }
