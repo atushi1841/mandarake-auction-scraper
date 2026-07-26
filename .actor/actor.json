@@ -11,19 +11,19 @@
     "title": "Mandarake Auction Listing",
     "description": "Scraped auction items from Mandarake marketplace",
     "properties": {
-      "item_index": {"title": "Index", "type": "string", "description": "Item index number"},
-      "item_no": {"title": "Item Number", "type": "string", "description": "Mandarake item number"},
-      "name": {"title": "Name", "type": "string", "description": "Item name"},
-      "current_price_jpy": {"title": "Current Price (JPY)", "type": "string", "description": "Current auction price in yen"},
-      "start_price_jpy": {"title": "Start Price (JPY)", "type": "string", "description": "Starting auction price"},
-      "bid_count": {"title": "Bids", "type": "string", "description": "Number of bids"},
-      "watch_count": {"title": "Watchers", "type": "string", "description": "Number of watchers"},
-      "shop_name": {"title": "Shop", "type": "string", "description": "Seller shop name"},
-      "image_url": {"title": "Image URL", "type": "string", "description": "Item thumbnail URL"},
-      "item_url": {"title": "Item URL", "type": "string", "description": "Full item page URL"},
-      "category": {"title": "Category", "type": "string", "description": "Item category"},
-      "auction_type": {"title": "Auction Type", "type": "string", "description": "Auction format"},
-      "scraped_at": {"title": "Scraped At", "type": "string", "description": "Timestamp of scraping"}
+      "item_index": {"title": "Index", "type": "string", "description": "Item index number", "template": "{{item_index}}"},
+      "item_no": {"title": "Item Number", "type": "string", "description": "Mandarake item number", "template": "{{item_no}}"},
+      "name": {"title": "Name", "type": "string", "description": "Item name", "template": "{{name}}"},
+      "current_price_jpy": {"title": "Price (JPY)", "type": "string", "description": "Current auction price in yen", "template": "{{current_price_jpy}}"},
+      "start_price_jpy": {"title": "Start Price (JPY)", "type": "string", "description": "Starting auction price", "template": "{{start_price_jpy}}"},
+      "bid_count": {"title": "Bids", "type": "string", "description": "Number of bids", "template": "{{bid_count}}"},
+      "watch_count": {"title": "Watchers", "type": "string", "description": "Number of watchers", "template": "{{watch_count}}"},
+      "shop_name": {"title": "Shop", "type": "string", "description": "Seller shop name", "template": "{{shop_name}}"},
+      "image_url": {"title": "Image URL", "type": "string", "description": "Item thumbnail URL", "template": "{{image_url}}"},
+      "item_url": {"title": "Item URL", "type": "string", "description": "Full item page URL", "template": "{{item_url}}"},
+      "category": {"title": "Category", "type": "string", "description": "Item category", "template": "{{category}}"},
+      "auction_type": {"title": "Auction Type", "type": "string", "description": "Auction format", "template": "{{auction_type}}"},
+      "scraped_at": {"title": "Scraped At", "type": "string", "description": "Timestamp of scraping", "template": "{{scraped_at}}"}
     },
     "required": ["name", "current_price_jpy", "item_url", "auction_type"]
   }
