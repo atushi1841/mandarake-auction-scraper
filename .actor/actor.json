@@ -1,7 +1,10 @@
 {
+  "actorSpecification": 1,
   "name": "mandarake-auction-scraper",
   "title": "Mandarake Auction Scraper",
   "description": "Scrape Japanese auction listings from Mandarake - anime, manga, figures, toys, collectibles",
-  "categories": ["e-commerce", "japan", "anime"],
-  "seo": "Mandarake, Japan auction, anime, manga, figure"
+  "version": "0.0",
+  "buildTag": "latest",
+  "input": "./INPUT_SCHEMA.json",
+  "dockerfile": "./Dockerfile"
 }
