@@ -63,5 +63,7 @@ async def main() -> None:
         await Actor.exit()
 
 
+import asyncio
+
 if __name__ == "__main__":
-    Actor.run(main())
+    asyncio.run(main())
