@@ -22,7 +22,10 @@ async def main() -> None:
         item_index = input_data.get("itemIndex")
 
         if mode == "category":
-            items = fetch_listing(category=category, page=1)
+            # Empty category = all items. Specific category slugs are available
+            # but the site may not filter by them reliably.
+            cat = category if category and category != "toys" else ""
+            items = fetch_listing(category=cat, page=1)
             if not items:
                 logger.warning("No items fetched for category %s", category)
             # Convert to model and push
