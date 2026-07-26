@@ -3,3 +3,11 @@ __pycache__/
 .venv/
 .env
 *.pyc
+
+node_modules/
+package-lock.json
+package.json
+.venv/
+*.pyc
+data/
+tests/
