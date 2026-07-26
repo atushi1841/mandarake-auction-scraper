@@ -1,0 +1,60 @@
+{
+  "title": "Mandarake Auction Scraper Input",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "mode": {
+      "title": "Mode",
+      "type": "string",
+      "enum": ["category", "rss", "detail"],
+      "default": "category",
+      "editor": "select",
+      "description": "Select which endpoint to scrape"
+    },
+    "category": {
+      "title": "Category",
+      "type": "string",
+      "enum": [
+        "manga-books","manga_before_1965","manga_after_1965","furoku",
+        "magazines","mook","culture","spiritual","bungei-sf",
+        "art-design-photo","music","books-others",
+        "toys","soft_vinyl","indy_sofvi","plamo","gokin",
+        "plastic_toys","ametoy",
+        "figure","pvc_action_figure","trading_figure","doll",
+        "stuffed_toy","figure-parts","figure-others",
+        "cd","record","tape","music-others",
+        "dvd-bluray","video","video-others",
+        "game","game_hardware","game_software","game_others",
+        "card","card_single","card_box","card_deck","card_supply",
+        "card-others","poster","cell","cel-others",
+        "manga_original_art","keychain","strap","badge","pen",
+        "towel","clock","bag","goods-others",
+        "apparel","watch","accessory",
+        "model_kit","anime_supply","interior","hobby-others"
+      ],
+      "default": "toys",
+      "editor": "select",
+      "description": "Slug of the category to scrape (only used when mode is 'category')"
+    },
+    "itemIndex": {
+      "title": "Item Index",
+      "type": "integer",
+      "default": 0,
+      "editor": "number",
+      "description": "Numeric item index for detail mode (found in item URL, e.g. 787000)"
+    },
+    "language": {
+      "title": "Language",
+      "type": "string",
+      "enum": ["ja", "en"],
+      "default": "ja",
+      "editor": "select",
+      "description": "RSS feed language (only used when mode is 'rss')"
+    }
+  },
+  "required": [],
+  "prefill": {
+    "mode": "category",
+    "category": "toys"
+  }
+}
