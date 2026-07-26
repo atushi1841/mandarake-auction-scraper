@@ -50,6 +50,15 @@
       "default": "ja",
       "editor": "select",
       "description": "RSS feed language (only used when mode is 'rss')"
+    },
+    "maxResults": {
+      "title": "Max Results",
+      "type": "integer",
+      "default": 25,
+      "maximum": 100,
+      "minimum": 1,
+      "editor": "number",
+      "description": "Maximum number of items to return (1-100)"
     }
   },
   "required": []

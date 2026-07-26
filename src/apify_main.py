@@ -20,6 +20,9 @@ async def main() -> None:
         mode = input_data.get("mode", "category")
         category = input_data.get("category", "toys")
         item_index = input_data.get("itemIndex")
+        max_results = int(input_data.get("maxResults", 25))
+        if max_results < 1:
+            max_results = 1
 
         if mode == "category":
             # Empty category = all items. Specific category slugs are available
@@ -28,19 +31,25 @@ async def main() -> None:
             items = fetch_listing(category=cat, page=1)
             if not items:
                 logger.warning("No items fetched for category %s", category)
+            # Limit to maxResults
+            items = items[:max_results]
             # Convert to model and push
             for item in items:
                 obj = MandarakeItem(**item)
                 await Actor.push_data(obj.to_dict())
             logger.info("Pushed %d items for category %s", len(items), category)
+            await Actor.set_status_message(f"Returned {len(items)} items for category mode")
 
         elif mode == "rss":
             language = input_data.get("language", "ja")  # optional
             items = fetch_rss(language=language)
+            # Limit to maxResults
+            items = items[:max_results]
             # RSS items have fewer fields; we can still push as dicts
             for item in items:
                 await Actor.push_data(item)
             logger.info("Pushed %d RSS items", len(items))
+            await Actor.set_status_message(f"Returned {len(items)} RSS items")
 
         elif mode == "detail":
             if item_index is None:
@@ -51,9 +60,14 @@ async def main() -> None:
             detail = fetch_item_detail(item_index)
             if not detail:
                 logger.warning("No detail fetched for index %s", item_index)
-            obj = MandarakeItemDetail(**detail)
-            await Actor.push_data(obj.to_dict())
-            logger.info("Pushed detail for index %s", item_index)
+            # Treat as list to unify limiting
+            items = [detail] if detail else []
+            items = items[:max_results]
+            for item in items:
+                obj = MandarakeItemDetail(**item)
+                await Actor.push_data(obj.to_dict())
+            logger.info("Pushed %d detail items for index %s", len(items), item_index)
+            await Actor.set_status_message(f"Returned {len(items)} detail items")
 
         else:
             logger.error("Unknown mode: %s", mode)
