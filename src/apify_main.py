@@ -6,7 +6,7 @@ import sys
 
 from apify import Actor
 
-from scraper import fetch_listing, fetch_item_detail, fetch_rss, CATEGORIES
+from scraper import fetch_listing, fetch_item_detail, fetch_rss, search_by_keyword, CATEGORIES
 from models import MandarakeItem, MandarakeItemDetail
 
 logger = logging.getLogger(__name__)
@@ -50,6 +50,21 @@ async def main() -> None:
                 await Actor.push_data(item)
             logger.info("Pushed %d RSS items", len(items))
             await Actor.set_status_message(f"Returned {len(items)} RSS items")
+
+        elif mode == "search":
+            keyword = input_data.get("keyword", "")
+            if not keyword:
+                logger.error("keyword is required for search mode")
+                await Actor.fail(status_message="keyword required for search mode")
+                return
+            items = search_by_keyword(keyword, max_results)
+            if not items:
+                logger.warning("No items found for keyword %s", keyword)
+            for item in items:
+                obj = MandarakeItem(**item)
+                await Actor.push_data(obj.to_dict())
+            logger.info("Pushed %d search results for keyword %s", len(items), keyword)
+            await Actor.set_status_message(f"Returned {len(items)} search results")
 
         elif mode == "detail":
             if item_index is None:

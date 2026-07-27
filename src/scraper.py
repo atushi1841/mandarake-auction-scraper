@@ -369,3 +369,32 @@ def fetch_rss(language: str = "ja") -> list[dict]:
             "scraped_at": datetime.now(timezone.utc).isoformat(),
         })
     return rss_data
+
+
+def search_by_keyword(keyword: str, max_results: int = 25) -> list[dict]:
+    """Search items by keyword using English listing page."""
+    url = f"{BASE_URL}/auction/item/itemsListJa.html"
+    client = _make_client()
+    try:
+        resp = client.get(
+            url,
+            params={"q": keyword, "keywords": "1", "t": "0", "s": "00", "l": "2"},
+            follow_redirects=True,
+        )
+        resp.raise_for_status()
+    except httpx.HTTPError as exc:
+        logger.error("Failed to search by keyword: %s", exc)
+        return []
+    finally:
+        client.close()
+
+    soup = BeautifulSoup(resp.text, "lxml")
+    all_blocks = soup.find_all("div", class_="block")
+    item_blocks = [b for b in all_blocks if _is_item_block(b)]
+    logger.info("Found %d item blocks out of %d total blocks for keyword '%s'",
+                len(item_blocks), len(all_blocks), keyword)
+
+    items = []
+    for block in item_blocks:
+        items.append(_parse_item_block(block, ""))
+    return items[:max_results]

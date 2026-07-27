@@ -6,7 +6,7 @@
     "mode": {
       "title": "Mode",
       "type": "string",
-      "enum": ["category", "rss", "detail"],
+      "enum": ["category", "rss", "detail", "search"],
       "default": "category",
       "editor": "select",
       "description": "Select which endpoint to scrape"
@@ -59,6 +59,12 @@
       "minimum": 1,
       "editor": "number",
       "description": "Maximum number of items to return (1-100)"
+    },
+    "keyword": {
+      "title": "Keyword",
+      "type": "string",
+      "default": "",
+      "description": "Keyword for search mode (only used when mode is 'search')"
     }
   },
   "required": []
