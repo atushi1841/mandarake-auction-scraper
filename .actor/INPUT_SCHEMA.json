@@ -64,7 +64,8 @@
       "title": "Keyword",
       "type": "string",
       "default": "",
-      "description": "Keyword for search mode (only used when mode is 'search')"
+      "editor": "textfield",
+      "description": "Search keyword (only used when mode is 'search')"
     }
   },
   "required": []
