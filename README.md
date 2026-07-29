@@ -57,6 +57,32 @@ This actor supports **Apify MCP Connectors** — connect your runs to Slack, Not
 
 You can also schedule daily/hourly runs from the **Schedule** tab and receive results via **webhook** (add a `webhookUrl` in the input).
 
+### Webhook Setup Examples
+
+**Slack** — Create a Slack webhook:
+1. Go to https://api.slack.com/apps → Create New App → Incoming Webhooks
+2. Activate and copy the Webhook URL (looks like `https://hooks.slack.com/services/T00/B00/xxxxx`)
+3. Paste it into the `webhookUrl` input field when running the actor
+4. Result: Slack posts a message like "Mandarake Auction Scraper completed: 25 items found"
+
+**Discord** — Create a Discord webhook:
+1. Server Settings → Integrations → Webhooks → New Webhook
+2. Copy the Webhook URL (looks like `https://discord.com/api/webhooks/xxxxx/yyyyy`)
+3. Paste it into the `webhookUrl` input field
+
+**n8n / Zapier** — Use any webhook trigger:
+1. Create an n8n "Webhook" node or Zapier "Webhooks by Zapier" trigger
+2. Copy the generated URL and paste into `webhookUrl`
+3. The JSON payload includes: `event`, `actor`, `keyword`, `itemCount`, `datasetId`, `datasetUrl`
+
+### Example: Scheduled Slack Alerts with Price Monitoring
+
+1. Set up keyword search as usual
+2. Add a Slack webhook URL to `webhookUrl`
+3. Go to **Schedule** tab → Create a daily schedule
+4. Every day at 9 AM, the actor runs and posts results to your Slack channel
+5. Click the dataset link in Slack to open full results
+
 ## Pricing
 
 - **$0.00005 per actor start** + **$0.001 per search** + **$0.00001 per result item**
