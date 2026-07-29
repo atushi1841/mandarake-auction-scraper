@@ -90,6 +90,7 @@ async def main() -> None:
         else:
             logger.error("Unknown mode: %s", mode)
             await Actor.fail(status_message=f"Unknown mode: {mode}")
+            return
 
     except Exception as exc:
         logger.exception("Actor run failed")
