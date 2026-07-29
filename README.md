@@ -49,6 +49,13 @@ Parameters:
 - **Price monitoring** — Track auction prices for specific collectibles over time
 - **Market research** — Analyze bidding patterns, popular categories, and price distributions
 - **Inventory feeds** — Feed structured auction data into LLMs for automated pricing analysis
+- **Automated alerts** — Add a webhook URL to receive Slack/Discord/n8n notifications when new items match your search
+
+## Integrations
+
+This actor supports **Apify MCP Connectors** — connect your runs to Slack, Notion, Supabase, or GitHub without sharing credentials. Look for the "Connectors" tab on the run screen.
+
+You can also schedule daily/hourly runs from the **Schedule** tab and receive results via **webhook** (add a `webhookUrl` in the input).
 
 ## Pricing
 

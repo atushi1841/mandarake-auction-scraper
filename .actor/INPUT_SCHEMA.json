@@ -66,6 +66,20 @@
       "default": "",
       "editor": "textfield",
       "description": "Search keyword (only used when mode is 'search')"
+    },
+    "webhookUrl": {
+      "title": "Webhook URL",
+      "type": "string",
+      "default": "",
+      "editor": "textfield",
+      "description": "Optional: POST a JSON summary to this URL when the run completes. Use with Slack, n8n, Zapier, or Discord webhooks."
+    },
+    "proxyConfiguration": {
+      "title": "Proxy Configuration",
+      "type": "object",
+      "description": "Apify proxy",
+      "editor": "proxy",
+      "default": { "useApifyProxy": true, "apifyProxyCountry": "JP" }
     }
   },
   "required": []

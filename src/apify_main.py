@@ -2,7 +2,9 @@
 Apify actor entry point for Mandarake Auction Scraper.
 """
 import logging
+import os
 import sys
+from datetime import datetime, timezone
 
 from apify import Actor
 
@@ -23,6 +25,7 @@ async def main() -> None:
         max_results = int(input_data.get("maxResults", 25))
         if max_results < 1:
             max_results = 1
+        items: list = []
 
         if mode == "category":
             # Empty category = all items. Specific category slugs are available
@@ -91,6 +94,31 @@ async def main() -> None:
     except Exception as exc:
         logger.exception("Actor run failed")
         await Actor.fail(status_message=str(exc))
+    else:
+        # Webhook delivery
+        webhook_url = input_data.get("webhookUrl", "")
+        if webhook_url:
+            # Get the default dataset ID from the run
+            run_info = await Actor.get_run()
+            ds_id = (run_info or {}).get("defaultDatasetId", "") if run_info else ""
+            
+            try:
+                summary = {
+                    "event": "actor_completed",
+                    "actor": "mandarake-auction-scraper",
+                    "mode": mode,
+                    "keyword": input_data.get("keyword", input_data.get("category", "")),
+                    "itemCount": len(items),
+                    "datasetId": ds_id,
+                    "datasetUrl": f"https://api.apify.com/v2/datasets/{ds_id}/items" if ds_id else "",
+                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                }
+                import httpx
+                async with httpx.AsyncClient(timeout=15.0) as client:
+                    resp = await client.post(webhook_url, json=summary)
+                    logger.info(f"Webhook delivered: HTTP {resp.status_code}")
+            except Exception as wh_err:
+                logger.warning(f"Webhook delivery failed: {wh_err}")
     finally:
         await Actor.exit()
 
