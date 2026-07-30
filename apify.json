@@ -1,7 +1,7 @@
 {
   "name": "mandarake-auction-scraper",
-  "title": "Mandarake Auction Scraper",
-  "description": "Scrape Japanese auction listings from Mandarake - anime, manga, figures, toys, collectibles",
-  "categories": ["e-commerce", "japan", "anime"],
-  "seo": "Mandarake, Japan auction, anime, manga, figure"
+  "title": "Mandarake Auction Scraper — まんだらけ オークション",
+  "description": "Scrape Japanese auction listings from Mandarake (まんだらけ), Japan's premier anime/manga/figures/toys/collectibles auction platform. Supports 60+ categories, keyword search with pagination, RSS feed, and item detail pages. Extract item name, current/start price (JPY), bid count, watchers, shop, images, description, end date. Python/httpx/BeautifulSoup.",
+  "categories": ["e-commerce", "japan", "anime", "auction", "collectibles"],
+  "seo": "Mandarake auction, Japan auction, anime, manga, figure, collectibles bidding, まんだらけ オークション"
 }

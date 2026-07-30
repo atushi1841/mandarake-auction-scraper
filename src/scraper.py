@@ -6,12 +6,17 @@ Fetch listing, item detail, and RSS feed.
 
 import re
 import logging
+import time
+import warnings
 from datetime import datetime, timezone
 from typing import Optional
 
 import httpx
 from bs4 import BeautifulSoup
+from bs4.builder import XMLParsedAsHTMLWarning
 import xml.etree.ElementTree as ET
+
+warnings.filterwarnings("ignore", category=XMLParsedAsHTMLWarning)
 
 BASE_URL = "https://ekizo.mandarake.co.jp"
 
@@ -100,6 +105,20 @@ def _make_client() -> httpx.Client:
         headers=HEADERS,
         timeout=30.0,
     )
+
+
+def _fetch_page(url: str, params: dict = None, follow_redirects: bool = False) -> BeautifulSoup:
+    """Fetch a page and return BeautifulSoup object."""
+    client = _make_client()
+    try:
+        resp = client.get(url, params=params, follow_redirects=follow_redirects)
+        resp.raise_for_status()
+        return BeautifulSoup(resp.text, "lxml")
+    except httpx.HTTPError as exc:
+        logger.error("Failed to fetch page: %s", exc)
+        return None
+    finally:
+        client.close()
 
 
 def _clean_int(value: str) -> int:
@@ -197,34 +216,39 @@ def _parse_item_block(block, category: str = "") -> dict:
 def fetch_listing(
     category: Optional[str] = None,
     page: int = 1,
+    max_pages: int = 1,
 ) -> list[dict]:
-    """Fetch listing page and return list of item dictionaries."""
-    params = {}
-    if category:
-        params["category"] = category
-    if page > 1:
-        params["page"] = page
-
+    """Fetch listing page(s) and return list of item dictionaries."""
+    max_pages = min(max_pages, 10)
     url = f"{BASE_URL}/auction/item/itemsListJa.html"
-    client = _make_client()
-    try:
-        resp = client.get(url, params=params)
-        resp.raise_for_status()
-    except httpx.HTTPError as exc:
-        logger.error("Failed to fetch listing: %s", exc)
-        return []
-    finally:
-        client.close()
+    all_items = []
+    for p in range(page, page + max_pages):
+        params = {}
+        if category:
+            params["category"] = category
+        if p > 1:
+            params["page"] = p
 
-    soup = BeautifulSoup(resp.text, "lxml")
-    all_blocks = soup.find_all("div", class_="block")
-    item_blocks = [b for b in all_blocks if _is_item_block(b)]
-    logger.info("Found %d item blocks out of %d total blocks", len(item_blocks), len(all_blocks))
+        soup = _fetch_page(url, params=params, follow_redirects=False)
+        if soup is None:
+            continue
 
-    items = []
-    for block in item_blocks:
-        items.append(_parse_item_block(block, category or ""))
-    return items
+        all_blocks = soup.find_all("div", class_="block")
+        item_blocks = [b for b in all_blocks if _is_item_block(b)]
+        logger.info("Page %d: Found %d item blocks out of %d total blocks",
+                    p, len(item_blocks), len(all_blocks))
+
+        items = []
+        for block in item_blocks:
+            items.append(_parse_item_block(block, category or ""))
+        if not items:
+            break
+        all_items.extend(items)
+
+        # crawl delay between pages
+        if p < page + max_pages - 1:
+            time.sleep(15)
+    return all_items
 
 
 def fetch_item_detail(item_index: int) -> dict:
@@ -371,30 +395,29 @@ def fetch_rss(language: str = "ja") -> list[dict]:
     return rss_data
 
 
-def search_by_keyword(keyword: str, max_results: int = 25) -> list[dict]:
-    """Search items by keyword using English listing page."""
-    url = f"{BASE_URL}/auction/item/itemsListJa.html"
-    client = _make_client()
-    try:
-        resp = client.get(
-            url,
-            params={"q": keyword, "keywords": "1", "t": "0", "s": "00", "l": "2"},
-            follow_redirects=True,
-        )
-        resp.raise_for_status()
-    except httpx.HTTPError as exc:
-        logger.error("Failed to search by keyword: %s", exc)
-        return []
-    finally:
-        client.close()
+def search_by_keyword(keyword: str, max_results: int = 25, max_pages: int = 2) -> list[dict]:
+    """Search items by keyword.
 
-    soup = BeautifulSoup(resp.text, "lxml")
-    all_blocks = soup.find_all("div", class_="block")
-    item_blocks = [b for b in all_blocks if _is_item_block(b)]
-    logger.info("Found %d item blocks out of %d total blocks for keyword '%s'",
-                len(item_blocks), len(all_blocks), keyword)
+    Due to Mandarake's JS-based search, keyword matching is done client‑side:
+    fetch all items (no category filter) for up to max_pages pages,
+    then filter items whose name contains the keyword (case‑insensitive).
+    """
+    max_pages = min(max_pages, 10)
+    max_results = min(max_results, 500)
+    keyword_lower = keyword.lower()
 
-    items = []
-    for block in item_blocks:
-        items.append(_parse_item_block(block, ""))
-    return items[:max_results]
+    all_items: list = []
+    for page in range(1, max_pages + 1):
+        page_items = fetch_listing(category=None, page=page, max_pages=1)
+        if not page_items:
+            break
+        for item in page_items:
+            name = item.get("name", "")
+            if keyword_lower in name.lower():
+                all_items.append(item)
+                if len(all_items) >= max_results:
+                    return all_items[:max_results]
+        # crawl delay between pages
+        if page < max_pages:
+            time.sleep(15)
+    return all_items[:max_results]

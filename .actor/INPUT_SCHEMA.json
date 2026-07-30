@@ -34,14 +34,23 @@
       ],
       "default": "toys",
       "editor": "select",
-      "description": "Slug of the category to scrape (only used when mode is 'category')"
+      "description": "Category slug (only used when mode is 'category')"
     },
     "itemIndex": {
       "title": "Item Index",
       "type": "integer",
       "default": 0,
       "editor": "number",
-      "description": "Numeric item index for detail mode (found in item URL, e.g. 787000)"
+      "description": "Numeric item index for detail mode (found in item URL)"
+    },
+    "maxPages": {
+      "title": "Max Pages",
+      "type": "integer",
+      "default": 2,
+      "minimum": 1,
+      "maximum": 20,
+      "editor": "number",
+      "description": "Max pages to scrape (~40 items per page, for search and category modes)"
     },
     "language": {
       "title": "Language",
@@ -54,11 +63,11 @@
     "maxResults": {
       "title": "Max Results",
       "type": "integer",
-      "default": 25,
-      "maximum": 100,
+      "default": 50,
+      "maximum": 200,
       "minimum": 1,
       "editor": "number",
-      "description": "Maximum number of items to return (1-100)"
+      "description": "Maximum items to return (1-200)"
     },
     "keyword": {
       "title": "Keyword",

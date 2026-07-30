@@ -22,10 +22,18 @@ async def main() -> None:
         mode = input_data.get("mode", "category")
         category = input_data.get("category", "toys")
         item_index = input_data.get("itemIndex")
-        max_results = int(input_data.get("maxResults", 25))
+        max_results = int(input_data.get("maxResults", 50))
         if max_results < 1:
             max_results = 1
+        if max_results > 500:
+            max_results = 500
         items: list = []
+
+        max_pages = int(input_data.get("maxPages", 2))
+        if max_pages < 1:
+            max_pages = 1
+        if max_pages > 10:
+            max_pages = 10
 
         if mode == "category":
             # Empty category = all items. Specific category slugs are available
@@ -60,7 +68,7 @@ async def main() -> None:
                 logger.error("keyword is required for search mode")
                 await Actor.fail(status_message="keyword required for search mode")
                 return
-            items = search_by_keyword(keyword, max_results)
+            items = search_by_keyword(keyword, max_results, max_pages)
             if not items:
                 logger.warning("No items found for keyword %s", keyword)
             for item in items:
