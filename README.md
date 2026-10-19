@@ -97,3 +97,13 @@ Pay-per-event (**PPE**): **$0.005 per item** scraped, plus a small per-run start
 ## Integrations
 
 Works with Apify **Connectors** (Slack, Google Sheets, Notion, Supabase, GitHub) and webhooks. Combine with a **Schedule** to build a fully automated collectibles auction-monitoring pipeline.
+
+---
+
+## Gumroad Products
+
+- [FREE Sample – Japan Hobby & Collectibles Market Price Dataset](https://atushi5.gumroad.com/l/kutuxe?utm_source=github_readme&utm_medium=readme&utm_campaign=japan_hobby)
+- [Japanese Anime Figure & Collectibles Market Price Dataset (Weekly CSV)](https://atushi5.gumroad.com/l/agyhq?utm_source=github_readme&utm_medium=readme&utm_campaign=japan_hobby)
+- [週次レポート｜日本ホビー・中古市場マーケット動向](https://atushi5.gumroad.com/l/qdyyyi?utm_source=github_readme&utm_medium=readme&utm_campaign=japan_hobby)
+
+> Source data: [Apify Store – fruitful_quintessence](https://apify.com/fruitful_quintessence)
